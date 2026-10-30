@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vcf
+      POSTGRES_PASSWORD: vcf
+      POSTGRES_DB: vcf_lic_mgmt
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vcf -d vcf_lic_mgmt"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: vcf-ops-backend:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://vcf:vcf@db:5432/vcf_lic_mgmt
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: vcf-ops-frontend:latest
+    restart: unless-stopped
+    environment:
+      API_PROXY_TARGET: http://backend:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

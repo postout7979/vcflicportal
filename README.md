@@ -47,6 +47,62 @@ vcf-ops-release/
 
 중지/삭제: `docker compose down` (데이터까지 지우려면 `docker compose down -v`)
 
+## docker public repository로부터 이미지 가져오기 및 실행
+- DB는 공식 docker hub에서 가져오기
+- frontend, backend는 postout7979에 업로드된 이미지를 repository에서 가져오기
+
+1. docker-compose.yml 파일의 이미지 경로를 수정
+
+    ```bash
+    services:
+      db:
+        image: postgres:16
+        restart: unless-stopped
+        environment:
+          POSTGRES_USER: vcf
+          POSTGRES_PASSWORD: vcf
+          POSTGRES_DB: vcf_lic_mgmt
+        ports:
+          - "5432:5432"
+        volumes:
+          - db_data:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U vcf -d vcf_lic_mgmt"]
+          interval: 5s
+          timeout: 5s
+          retries: 10
+    
+      backend:
+        image: postout7979/vcf-ops-backend:latest
+        restart: unless-stopped
+        environment:
+          DATABASE_URL: postgresql://vcf:vcf@db:5432/vcf_lic_mgmt
+        ports:
+          - "8000:8000"
+        depends_on:
+          db:
+            condition: service_healthy
+    
+      frontend:
+        image: postout7979/vcf-ops-frontend:latest
+        restart: unless-stopped
+        environment:
+          API_PROXY_TARGET: http://backend:8000
+        ports:
+          - "5173:5173"
+        depends_on:
+          - backend
+    
+    volumes:
+      db_data:
+    ```
+
+2. 애플리케이션을 실행합니다.
+
+   ```bash
+   docker compose up -d
+   ```
+
 ## 데이터에 대한 중요 안내
 
 이 패키지에는 **데이터베이스 내용은 포함되어 있지 않습니다** (이미지는 코드만 담고 있고, 실제 데이터는 Docker volume `db_data`에 별도로 저장됩니다). 처음 `docker compose up`을 실행하면 **완전히 빈 상태**(관리자 계정만 있는 초기 상태)로 시작됩니다.

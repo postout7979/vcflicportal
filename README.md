@@ -1,3 +1,6 @@
+# Disclaimer
+이 도구는 브로드컴사에 제공하는 것이 아니며, 개인 기여로 AI 코딩을 통해 개발된 도구입니다. 도구 사용에 대한 책임 및 Guest OS에 대한 보안에 대한 책임은 사용자에게 있습니다.
+
 # VCF-Lic-MGMT (배포 패키지)
 
 VMware Cloud Foundation(VCF) 환경의 라이센스를 관리하기 위한 사내 도구입니다. 공급자(벤더) 라이센스 데이터, Broadcom CSP 데이터, 그리고 실제 운영 중인 vCenter/VCF Operations에서 수집한 실사용 현황을 "프로젝트" 단위로 모아 비교·관리합니다.
@@ -7,6 +10,9 @@ VMware Cloud Foundation(VCF) 환경의 라이센스를 관리하기 위한 사�
 - **실행 방식**: Docker Compose (아래 이미지들을 그대로 불러와 실행)
 
 이 폴더에는 소스 코드 대신 **빌드가 끝난 Docker 이미지**가 들어 있습니다. 별도의 빌드 과정 없이 이미지를 불러오기만 하면 바로 실행할 수 있습니다.
+[ OVA 파일 가상 어플라이언스(Unbutu)를 import하여, 컨테이너 이미지 로드 없이 폐쇄망에서 바로 사용할 수 있습니다. ]
+[ BOX링크: https://ent.box.com/s/x8as240v04cjfx2ctfaubvyew0zwijb3 ]
+
 
 ## 폴더 구성
 
